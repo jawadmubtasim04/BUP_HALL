@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BUP Hall Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="navbar bg-base-100 shadow-sm sticky top-0 z-50">
+      <div class="navbar-start">
+        <div class="dropdown">
+          <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
+          </div>
+          <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[100] mt-3 w-52 p-2 shadow">
+            <li><a href="#home" onclick="showSection('home')">Home</a></li>
+            <li tabindex="0">
+                <a>Facilities</a>
+                <ul class="p-2">
+                  <li><a href="#hall-facility" onclick="showSection('hall-facility')">Hall Facilities</a></li>
+                  <li><a href="#in-room-facility" onclick="showSection('in-room-facility')">In-room Facilities</a></li>
+                </ul>
+            </li>
+            <li><a href="#admission" onclick="showSection('admission')">Admission</a></li>
+            
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="flex items-center">
+            <a href="https://bup.edu.bd/" class="flex items-center">
+                <img class="h-10 w-auto mr-2" src="https://bup.edu.bd/public/upload/logo/202306071686132726.svg" alt="BUP Logo">
+            </a>
+            <a class="btn btn-ghost text-xl normal-case" onclick="showSection('home')">BUP Hall</a>
+        </div>
+      </div>
+      <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal px-1">
+          <li><a href="#home" onclick="showSection('home')">Home</a></li>
+          <li>
+            <details>
+              <summary>Facilities</summary>
+              <ul class="p-2 bg-base-100 rounded-t-none z-[100]">
+                <li><a href="#hall-facility" onclick="showSection('hall-facility')">Hall Facilities</a></li>
+                <li><a href="#in-room-facility" onclick="showSection('in-room-facility')">In-room Facilities</a></li>
+              </ul>
+            </details>
+          </li>
+          <li><a href="#admission" onclick="showSection('admission')">Admission</a></li>
+           
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="navbar-end">
+        <a href="/login.html" class="btn btn-primary" onclick="">Hall Portal</a>
+      </div>
+    </div>
+
+    <main>
+        <section id="home" class="page-section">
+            <div class="hero min-h-[calc(100vh-4rem)]" id="hero-slideshow">
+                <div class="slides-container" id="slides-container"></div>
+                <div class="hero-overlay bg-black bg-opacity-60"></div>
+                <div class="hero-content text-neutral-content text-center">
+                    <div class="max-w-md">
+                        <h1 class="mb-5 text-5xl font-bold text-white">Welcome to BUP Hall</h1>
+                        <p class="mb-5 text-gray-200">Experience a comfortable and secure stay with our top-notch facilities and dedicated support. Your home away from home.</p>
+                        <button class="btn btn-primary" onclick="showSection('admission')">Get Started</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="hall-facility" class="page-section hidden">
+             <div class="container mx-auto p-4 md:p-8">
+                 <header class="text-center mb-12">
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-800">Hall Facilities</h2>
+                    <p class="mt-4 text-lg text-slate-600">Discover the benefits of living on campus.</p>
+                </header>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 lg:gap-x-12 gap-y-10 lg:gap-y-12">
+                    <div class="feature-item">
+                        <div class="feature-icon-wrapper"><i class="fas fa-brain feature-icon"></i></div>
+                        <div class="feature-content">
+                            <h3 class="feature-title">Smart Living Scope</h3>
+                            <p class="feature-description">Stay closer to the library, faculty, and your peers. On-campus students often achieve higher grades due to easy access to academic resources.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon-wrapper"><i class="fas fa-map-marker-alt feature-icon"></i></div>
+                        <div class="feature-content">
+                            <h3 class="feature-title">Close to the Class</h3>
+                            <p class="feature-description">You're just minutes away from your classes, the library, dining halls, sports zones, and the gymnasium. Everything you need is within a short walk.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon-wrapper"><i class="fas fa-users feature-icon"></i></div>
+                        <div class="feature-content">
+                            <h3 class="feature-title">Leadership Development</h3>
+                            <p class="feature-description">Living in a hall community fosters involvement and helps you develop crucial leadership skills and a strong sense of responsibility.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon-wrapper"><i class="fas fa-dollar-sign feature-icon"></i></div>
+                        <div class="feature-content">
+                            <h3 class="feature-title">Cost-Effective Living</h3>
+                            <p class="feature-description">Hall living is an affordable option that bundles your housing, utilities, and other services into one manageable cost, making budgeting simple.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon-wrapper"><i class="fas fa-wifi feature-icon"></i></div>
+                        <div class="feature-content">
+                            <h3 class="feature-title">Wireless Connectivity</h3>
+                            <p class="feature-description">Enjoy seamless Wi-Fi access throughout the hall, labs, and library. Stay connected for your academic and personal needs anytime, anywhere.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon-wrapper"><i class="fas fa-shield-alt feature-icon"></i></div>
+                        <div class="feature-content">
+                            <h3 class="feature-title">Safety & Security</h3>
+                            <p class="feature-description">Your safety is our top priority. We provide 24/7 security staff, CCTV surveillance, and secure access to ensure a safe living environment.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="in-room-facility" class="page-section hidden">
+            <div class="container mx-auto p-4 md:p-8">
+                <header class="text-center mb-12">
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-800">In-Room Facilities</h2>
+                    <p class="mt-4 text-lg text-slate-600">Comfort and convenience, right in your room.</p>
+                </header>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 lg:gap-x-12 gap-y-10">
+                    <div class="amenity-category">
+                        <h2 class="category-title">Furnishings</h2>
+                        <ul class="amenity-list">
+                            <li><i class="fas fa-bed icon"></i>One Bed per Student</li>
+                            <li><i class="fas fa-person-booth icon"></i>Furnished rooms with beds & under-bed drawers</li>
+                            <li><i class="fas fa-chair icon"></i>Study table & Chair</li>
+                            <li><i class="fas fa-lightbulb icon"></i>Tube lights & Fan</li>
+                            <li><i class="fas fa-trash-alt icon"></i>Dustbin in each room</li>
+                        </ul>
+                    </div>
+                    <div class="amenity-category">
+                        <h2 class="category-title">Utilities & Services</h2>
+                        <ul class="amenity-list">
+                            <li><i class="fas fa-bolt icon"></i>Electricity Facility in each room</li>
+                            <li><i class="fas fa-plug icon"></i>Generator facility available (Need Based)</li>
+                            <li><i class="fas fa-wifi icon"></i>Broadband and Wi-Fi service</li>
+                            <li><i class="fas fa-broom icon"></i>Daily housekeeping for rooms and common areas</li>
+                        </ul>
+                    </div>
+                    <div class="amenity-category">
+                        <h2 class="category-title">Security</h2>
+                        <ul class="amenity-list">
+                            <li><i class="fas fa-video icon"></i>CCTV Cameras in common areas</li>
+                            <li><i class="fas fa-user-shield icon"></i>24/7 Security Guard presence</li>
+                            <li><i class="fas fa-shield-alt icon"></i>Secure building access</li>
+                        </ul>
+                    </div>
+                    <div class="amenity-category">
+                        <h2 class="category-title">Entertainment & Leisure</h2>
+                        <ul class="amenity-list">
+                            <li><i class="fas fa-tv icon"></i>Access to a common room with a TV</li>
+                            <li><i class="fas fa-gamepad icon"></i>Indoor games like carrom, chess, table tennis</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="admission" class="page-section hidden">
+            <div class="admission-container max-w-4xl mx-auto bg-white shadow-xl rounded-lg p-6 md:p-10">
+                <header class="text-center mb-8">
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-800">Admissions</h2>
+                    <p class="mt-4 text-lg text-slate-600">Your guide to joining the BUP Hall community.</p>
+                </header>
+                <section class="apply-section mb-8 pb-6 border-b border-slate-200">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <h2 class="text-2xl font-semibold text-slate-700">Apply for a seat</h2>
+                        <a href="/login.html" onclick="" class="btn-primary-orange">
+                            BUP HALL PORTAL <i class="fas fa-external-link-alt ml-2 text-sm"></i>
+                        </a>
+                    </div>
+                </section>
+                <section class="eligibility-section content-section mb-8">
+                    <h3 class="section-title">Admission Eligibility</h3>
+                    <ul class="list-disc list-outside pl-5 space-y-2 text-slate-600">
+                        <li>Must be a regular student of BUP.</li>
+                        <li>Minimum SGPA of 2.5 for readmission/existing students.</li>
+                        <li>No history of accusation or conviction from the University or Government.</li>
+                    </ul>
+                </section>
+                <section class="fees-section content-section mb-8">
+                    <h3 class="section-title">Hall Fees</h3>
+                    <p class="text-slate-600 mt-3 mb-3">
+                        A new student has to pay a one-time admission fee in the 1st semester, and a recurring semester fee thereafter. Payments are due at the beginning of each semester during academic registration.
+                    </p>
+                </section>
+                <section class="payment-section content-section mb-8">
+                    <h3 class="section-title">Payment Procedure</h3>
+                    <p class="text-slate-600 mb-4">
+                        Payments can be made at the Accounts section at DSC or through the student Hall portal using various mobile and online banking methods.
+                    </p>
+                </section>
+                <section class="cancellation-section content-section mb-8">
+                    <h3 class="section-title">Seat Cancellation</h3>
+                    <p class="text-slate-600">
+                        Students can apply for seat cancellation during specific periods announced by the Hall Authority each semester.
+                    </p>
+                </section>
+            </div>
+        </section>
+
+        <section id="login" class="page-section hidden">
+            <div class="bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center min-h-screen p-4">
+                <div class="login-container bg-white shadow-2xl rounded-xl p-8 md:p-12 w-full max-w-md">
+                    <header class="text-center mb-8">
+                        <i class="fas fa-user-graduate text-5xl text-sky-600 mb-3"></i>
+                        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">Student Portal Login</h1>
+                        <p class="text-slate-500 mt-2">Access your student dashboard.</p>
+                    </header>
+                    <form id="loginForm" class="space-y-6">
+                        <div>
+                            <label for="studentId" class="block text-sm font-medium text-slate-700 mb-1">Student ID</label>
+                            <div class="relative"><input type="text" id="studentId" class="form-input" placeholder="Enter your student ID" required></div>
+                        </div>
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                            <div class="relative"><input type="password" id="password" class="form-input" placeholder="Enter your password" required></div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input id="remember-me" type="checkbox" class="h-4 w-4 text-sky-600 focus:ring-sky-500 border-slate-300 rounded">
+                                <label for="remember-me" class="ml-2 block text-sm text-slate-700">Remember me</label>
+                            </div>
+                            <div class="text-sm"><a href="#" class="font-medium text-sky-600 hover:text-sky-500">Forgot password?</a></div>
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-sky-600 to-indigo-700 hover:from-sky-700 hover:to-indigo-800">
+                                <i class="fas fa-sign-in-alt mr-2 mt-0.5"></i> Sign In
+                            </button>
+                        </div>
+                    </form>
+                    <p id="loginMessage" class="mt-6 text-center text-sm text-red-600"></p>
+                </div>
+            </div>
+        </section>
+
+        
+    </main>
+
+    <footer id="contact" class="footer bg-base-300 text-base-content p-10">
+      <nav>
+        <h6 class="footer-title">Location</h6>
+        <p>Mirpur Cantonment, Dhaka-1216</p>
+      </nav>
+      <nav>
+        <h6 class="footer-title">Contact</h6>
+        <p>Provost Office: +880-XXX-XXXXXX</p>
+        <p>Email: hall.info@bup.edu.bd</p>
+      </nav>
+      <nav>
+        <h6 class="footer-title">Useful Links</h6>
+        <a href="https://bup.edu.bd/" class="link link-hover">BUP Main Website</a>
+        <a href="#login" onclick="showSection('login')" class="link link-hover">Student Portal</a>
+      </nav>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - BUP Hall Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .main-nav-btn { background-color: white; color: #374151; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); transition: all 0.2s ease-in-out; cursor: pointer; }
+        .main-nav-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .main-nav-btn:disabled { background-color: #f3f4f6; color: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
+        .page-view { display: none; }
+        .page-view.active { display: block; }
+        .meal-row { display: flex; align-items: center; padding: 1rem 0.5rem; border-bottom: 1px solid #e5e7eb; }
+        .meal-row.active-day { background-color: #eff6ff; }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <header class="bg-white shadow-md sticky top-0 z-20">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-gray-800">Student Portal</h1>
+            <div class="flex items-center space-x-4">
+                <div class="text-right">
+                    <p class="text-sm text-gray-600">Welcome, <span id="student-id-display" class="font-semibold">Student</span></p>
+                </div>
+                <button id="logout-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg text-sm">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+            <button data-view="status-view" class="main-nav-btn font-semibold py-4 rounded-lg">Seat Status</button>
+            <button data-view="meal-view" id="nav-meal-btn" class="main-nav-btn font-semibold py-4 rounded-lg">Meal Planning</button>
+            <button data-view="history-view" class="main-nav-btn font-semibold py-4 rounded-lg">Meal History</button>
+            <button data-view="notice-view" class="main-nav-btn font-semibold py-4 rounded-lg">Hall Notices</button>
+            <button data-view="complaint-view" class="main-nav-btn font-semibold py-4 rounded-lg">File Complaint</button>
+        </div>
+
+        <div id="page-container">
+            <div id="status-view" class="page-view active">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-700">Seat Information</h2>
+                    <div id="status-content" class="text-center">
+                        <p class="text-lg">Current Status: <span id="seat-status" class="font-semibold text-blue-600">Loading...</span></p>
+                        <p id="seat-number-display" class="text-md text-gray-600 mt-2 hidden"></p>
+                        <div id="action-buttons" class="mt-6">
+                            <button id="request-seat-btn" class="hidden bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg">Request a Seat</button>
+                            <button id="pay-now-btn" class="hidden bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">Pay Now to Confirm Seat</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="meal-view" class="page-view">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-2xl font-bold mb-2 text-gray-700">Monthly Meal Planner</h2>
+                    <p class="text-center font-semibold text-lg mb-4" id="meal-planner-header"></p>
+                    <div id="meal-calendar-container" class="space-y-2"></div>
+                </div>
+            </div>
+            <div id="history-view" class="page-view">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-700">Meal History & Billing</h2>
+                    <div id="history-container" class="space-y-6"></div>
+                </div>
+            </div>
+            <div id="notice-view" class="page-view">
+                 <div class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-700">Hall Notices</h2>
+                    <div id="notice-container" class="space-y-4"></div>
+                </div>
+            </div>
+            <div id="complaint-view" class="page-view">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-700">File a Complaint</h2>
+                    <form id="complaint-form">
+                        <textarea id="complaint-text" rows="5" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Describe your issue..."></textarea>
+                        <button type="submit" class="mt-4 w-full bg-indigo-600 text-white font-bold py-3 rounded-lg">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- GLOBAL STATE & AUTH CHECK ---
+        const token = sessionStorage.getItem('token');
+        let studentData = null;
+        if (!token) {
+            window.location.href = '/login.html';
+        }
+
+        // --- UI ELEMENT DECLARATIONS ---
+        const studentIdDisplay = document.getElementById('student-id-display');
+        const logoutBtn = document.getElementById('logout-btn');
+        const navButtons = document.querySelectorAll('.main-nav-btn');
+        const pageViews = document.querySelectorAll('.page-view');
+        // Seat Status
+        const seatStatusDisplay = document.getElementById('seat-status');
+        const seatNumberDisplay = document.getElementById('seat-number-display');
+        const requestSeatBtn = document.getElementById('request-seat-btn');
+        const payNowBtn = document.getElementById('pay-now-btn');
+        const navMealBtn = document.getElementById('nav-meal-btn');
+        // Meal Planning
+        const mealCalendarContainer = document.getElementById('meal-calendar-container');
+        const mealPlannerHeader = document.getElementById('meal-planner-header');
+        // Meal History
+        const historyContainer = document.getElementById('history-container');
+        // Hall Notices
+        const noticeContainer = document.getElementById('notice-container');
+        // Complaint
+        const complaintForm = document.getElementById('complaint-form');
+        const complaintText = document.getElementById('complaint-text');
+
+
+        // --- VIEW SWITCHING LOGIC ---
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetViewId = button.dataset.view;
+                pageViews.forEach(view => view.classList.toggle('active', view.id === targetViewId));
+                
+                // Load data for the selected tab if needed
+                if (targetViewId === 'meal-view' && studentData.seatStatus === 'approved') {
+                    initializeMealCalendar();
+                } else if (targetViewId === 'history-view') {
+                    loadMealHistory();
+                } else if (targetViewId === 'notice-view') {
+                    loadNotices();
+                }
+            });
+        });
+
+        // --- MAIN DASHBOARD LOADER & UI UPDATER ---
+        async function loadDashboard() {
+            try {
+                const response = await fetch('/api/student/dashboard', { headers: { 'Authorization': `Bearer ${token}` } });
+                if (!response.ok) throw new Error('Auth error');
+                studentData = await response.json();
+                updateUI(studentData);
+            } catch (error) {
+                sessionStorage.clear();
+                window.location.href = '/login.html';
+            }
+        }
+
+        function updateUI(data) {
+            studentIdDisplay.textContent = data.studentId;
+            seatStatusDisplay.textContent = data.seatStatus.charAt(0).toUpperCase() + data.seatStatus.slice(1);
+            
+            requestSeatBtn.classList.add('hidden');
+            payNowBtn.classList.add('hidden');
+            seatNumberDisplay.classList.add('hidden');
+            navMealBtn.disabled = true;
+
+            if (data.seatStatus === 'none') {
+                requestSeatBtn.classList.remove('hidden');
+            } else if (data.seatStatus === 'payment_pending') {
+                seatNumberDisplay.textContent = `Assigned Seat: ${data.seatNumber}`;
+                seatNumberDisplay.classList.remove('hidden');
+                payNowBtn.classList.remove('hidden');
+            } else if (data.seatStatus === 'approved') {
+                seatNumberDisplay.textContent = `Your Confirmed Seat: ${data.seatNumber}`;
+                seatNumberDisplay.classList.remove('hidden');
+                navMealBtn.disabled = false;
+            }
+        }
+            
+        // --- EVENT LISTENERS & FEATURE LOGIC ---
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+        logoutBtn.addEventListener('click', () => { sessionStorage.clear(); window.location.href = '/login.html'; });
+
+        // Seat Management
+        requestSeatBtn.addEventListener('click', async () => {
+             try {
+                const response = await fetch('/api/student/request-seat', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } });
+                const result = await response.json();
+                alert(result.message);
+                if (response.ok) loadDashboard();
+            } catch (error) { alert('Failed to submit seat request.'); }
+        });
+        payNowBtn.addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/student/confirm-payment', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } });
+                const result = await response.json();
+                alert(result.message);
+                if (response.ok) {
+                    studentData = result.user;
+                    updateUI(result.user);
+                }
+            } catch (error) { alert('Failed to confirm payment.'); }
+        });
+        
+        // Meal Planning
+        async function initializeMealCalendar() {
+            mealCalendarContainer.innerHTML = '<p>Loading meal plan...</p>';
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            mealPlannerHeader.textContent = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            try {
+                const response = await fetch(`/api/student/meals?year=${year}&month=${month}`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (!response.ok) throw new Error('Failed to fetch meals');
+                const mealPlans = await response.json();
+                renderCalendar(mealPlans);
+            } catch (error) {
+                mealCalendarContainer.innerHTML = `<p class="text-red-500">${error.message}</p>`;
+            }
+        }
+
+        function renderCalendar(mealPlans) {
+            mealCalendarContainer.innerHTML = '';
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const currentDate = new Date(Date.UTC(year, month, day));
+                const dateString = currentDate.toISOString().split('T')[0];
+                const tomorrowString = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + 1)).toISOString().split('T')[0];
+                const existingPlan = mealPlans.find(p => p.date === dateString);
+                const isEditable = (dateString === tomorrowString) && !existingPlan;
+                const row = document.createElement('div');
+                row.className = 'meal-row';
+                if (isEditable) row.classList.add('active-day');
+                row.innerHTML = `<div class="w-1/4"><p class="font-bold">${currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })}</p><p class="text-sm text-gray-500">${currentDate.toLocaleDateString('en-US', { weekday: 'long', timeZone: 'UTC' })}</p></div><div class="w-2/4 flex justify-around"><label><input type="checkbox" ${existingPlan?.breakfast ? 'checked' : ''} ${!isEditable ? 'disabled' : ''}> B</label><label><input type="checkbox" ${existingPlan?.lunch ? 'checked' : ''} ${!isEditable ? 'disabled' : ''}> L</label><label><input type="checkbox" ${existingPlan?.dinner ? 'checked' : ''} ${!isEditable ? 'disabled' : ''}> D</label></div><div class="w-1/4 text-right"><button class="px-4 py-2 text-sm rounded-lg ${isEditable ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'}" ${!isEditable ? 'disabled' : ''}>${existingPlan ? 'Saved' : 'Done'}</button></div>`;
+                if (isEditable) {
+                    row.querySelector('button').addEventListener('click', async () => {
+                        const checkboxes = row.querySelectorAll('input[type="checkbox"]');
+                        const mealPlan = { studentId: studentData.studentId, date: dateString, breakfast: checkboxes[0].checked, lunch: checkboxes[1].checked, dinner: checkboxes[2].checked };
+                        try {
+                            const response = await fetch('/api/student/meals', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(mealPlan) });
+                            const result = await response.json();
+                            alert(result.message);
+                            if (response.ok) initializeMealCalendar();
+                        } catch (error) { alert('Failed to save meal plan.'); }
+                    });
+                }
+                mealCalendarContainer.appendChild(row);
+            }
+        }
+
+        // Meal History
+        async function loadMealHistory() {
+            historyContainer.innerHTML = '<p>Loading history...</p>';
+            const response = await fetch('/api/student/meal-history', { headers: { 'Authorization': `Bearer ${token}` } });
+            const historyData = await response.json();
+            historyContainer.innerHTML = '';
+            if(Object.keys(historyData).length === 0) { historyContainer.innerHTML = '<p>No meal history found.</p>'; return; }
+            for (const monthKey in historyData) {
+                const data = historyData[monthKey];
+                const monthDate = new Date(monthKey + '-02');
+                const monthName = monthDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+                const card = document.createElement('div');
+                card.className = 'bg-gray-50 p-4 rounded-lg border';
+                card.innerHTML = `<h3 class="font-bold text-lg">${monthName}</h3><p>Breakfast: ${data.breakfast} meals = ${data.breakfast * 20} BDT</p><p>Lunch: ${data.lunch} meals = ${data.lunch * 40} BDT</p><p>Dinner: ${data.dinner} meals = ${data.dinner * 40} BDT</p><p class="font-bold mt-2 text-right">Total: ${data.totalCost} BDT</p>`;
+                historyContainer.appendChild(card);
+            }
+        }
+
+        // Hall Notices
+        async function loadNotices() {
+            noticeContainer.innerHTML = '<p>Loading notices...</p>';
+            const response = await fetch('/api/student/notices', { headers: { 'Authorization': `Bearer ${token}` } });
+            const notices = await response.json();
+            noticeContainer.innerHTML = '';
+            if(notices.length === 0) { noticeContainer.innerHTML = '<p>No notices found.</p>'; return; }
+            notices.forEach(n => {
+                const card = document.createElement('div');
+                card.className = 'bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500';
+                card.innerHTML = `<p class="font-bold">${n.title}</p><p class="text-sm text-gray-500">${new Date(n.timestamp).toLocaleString()}</p><p class="mt-2">${n.content}</p>`;
+                noticeContainer.appendChild(card);
+            });
+        }
+
+        // File Complaint
+        complaintForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = complaintText.value;
+            if (!text) return alert('Complaint cannot be empty.');
+            try {
+                const response = await fetch('/api/student/complaints', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ complaintText: text })
+                });
+                const result = await response.json();
+                alert(result.message);
+                if (response.ok) {
+                    complaintText.value = '';
+                    document.querySelector('[data-view="status-view"]').click();
+                }
+            } catch (error) {
+                alert('Failed to submit complaint.');
+            }
+        });
+    </script>
+</body>
+</html>

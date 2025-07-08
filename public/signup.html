@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUP Hall Management - Student Signup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
+            <div>
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    Student Registration
+                </h2>
+                <p class="mt-2 text-center text-sm text-gray-600">
+                    Create your BUP Hall account
+                </p>
+            </div>
+            <form id="signup-form" class="mt-8 space-y-6">
+                <input type="hidden" name="remember" value="true">
+                <div class="rounded-md shadow-sm -space-y-px">
+                    <div>
+                        <label for="student-id" class="sr-only">Student ID</label>
+                        <input id="student-id" name="student-id" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Student ID (e.g., 212311001)">
+                    </div>
+                    <div>
+                        <label for="dob" class="sr-only">Date of Birth</label>
+                        <input id="dob" name="dob" type="date" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Date of Birth">
+                    </div>
+                    <div>
+                        <label for="bup-mail" class="sr-only">BUP Mail</label>
+                        <input id="bup-mail" name="bup-mail" type="email" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="BUP Mail Address">
+                    </div>
+                    <div>
+                        <label for="password" class="sr-only">Password</label>
+                        <input id="password" name="password" type="password" autocomplete="new-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Password">
+                    </div>
+                    <div>
+                        <label for="confirm-password" class="sr-only">Confirm Password</label>
+                        <input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Confirm Password">
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Sign up
+                    </button>
+                </div>
+                <div id="error-message" class="text-red-500 text-sm text-center"></div>
+            </form>
+             <p class="mt-2 text-center text-sm text-gray-600">
+                Already have an account?
+                <a href="./login.html" class="font-medium text-indigo-600 hover:text-indigo-500">
+                    Log in
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <!-- New script for MongoDB backend -->
+<script>
+    const signupForm = document.getElementById('signup-form');
+    const errorMessageDiv = document.getElementById('error-message');
+
+    signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Prevent the form from submitting the traditional way
+        errorMessageDiv.textContent = ''; // Clear previous errors
+
+        // Get user inputs
+        const studentId = document.getElementById('student-id').value;
+        const dob = document.getElementById('dob').value;
+        const email = document.getElementById('bup-mail').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+
+        // --- Basic Validation ---
+        if (password !== confirmPassword) {
+            errorMessageDiv.textContent = 'Passwords do not match.';
+            return;
+        }
+        if (password.length < 6) {
+            errorMessageDiv.textContent = 'Password should be at least 6 characters long.';
+            return;
+        }
+
+        // Prepare the data to send to the server
+        const formData = { studentId, dob, email, password };
+
+        try {
+            // Send the data to our server's signup endpoint
+            const response = await fetch('/api/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // Success!
+                alert(result.message);
+                window.location.href = '/login.html'; // Redirect to login
+            } else {
+                // Handle errors from the server
+                errorMessageDiv.textContent = result.message;
+            }
+
+        } catch (error) {
+            console.error('Fetch Error:', error);
+            errorMessageDiv.textContent = 'An error occurred. Please try again later.';
+        }
+    });
+</script>
+</body>
+</html>
