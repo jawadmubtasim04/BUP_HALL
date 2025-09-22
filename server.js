@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const path = require('path'); // ADDED THIS LINE
 
 // --- Import Models ---
 const User = require('./models/User');
@@ -31,7 +32,7 @@ mongoose.connect(MONGO_URI)
 
 // --- Basic Route ---
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
+    res.sendFile(path.join(__dirname, 'public', 'index.html')); // CHANGED THIS LINE
 });
 
 // --- JWT Authentication Middleware ---
